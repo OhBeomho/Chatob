@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
 		io.to(joinedRoom.roomName).emit("chatting", {
 			type: "general",
 			message,
-			time: dayjs(new Date()).format("h:mm A"),
+			time: dayjs(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })).format("h:mm A"),
 			username: clientName
 		})
 	);
