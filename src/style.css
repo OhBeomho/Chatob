@@ -137,6 +137,7 @@ body,
 	padding: 6px;
 	border-radius: 10px;
 	margin: 0 5px;
+	white-space: pre-wrap;
 }
 
 .message.me .content .message-bubble {
