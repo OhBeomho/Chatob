@@ -107,13 +107,12 @@ body,
 }
 
 .message {
+	width: calc(100% - 20px);
 	padding: 10px;
 	display: flex;
 }
 
 .message.announce {
-	width: 100%;
-	padding: 0;
 	justify-content: center;
 	align-items: center;
 	color: gray;

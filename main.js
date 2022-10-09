@@ -98,14 +98,23 @@ io.on("connection", (socket) => {
 			});
 		}
 	});
-	socket.on("chatting", (message) =>
-		io.to(joinedRoom.roomName).emit("chatting", {
+	socket.on("chatting", (message) => {
+		const messageData = {
 			type: "general",
 			message,
 			time: dayjs(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })).format("h:mm A"),
 			username: clientName
-		})
-	);
+		};
+
+		for (let user of joinedRoom.users) {
+			if ((message + " ").includes(`@${user} `)) {
+				messageData.mention = user;
+				break;
+			}
+		}
+
+		io.to(joinedRoom.roomName).emit("chatting", messageData);
+	});
 	socket.on("disconnect", () => {
 		if (joinedRoom) {
 			socket.to(joinedRoom.roomName).emit("chatting", {

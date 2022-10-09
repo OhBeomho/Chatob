@@ -17,7 +17,7 @@ const sendButton = document.getElementById("sendButton");
 const createRoomButton = document.getElementById("createRoomButton");
 const joinRoomButton = document.getElementById("joinRoomButton");
 
-function addMessage(username, text, time) {
+function addMessage(username, text, time, mention) {
 	const className = username === myName ? "me" : "other";
 	const message = document.createElement("li");
 	message.classList.add("message", className);
@@ -31,6 +31,8 @@ function addMessage(username, text, time) {
 			<div class="time">${time}</div>
 		</div>
 	`;
+	if (mention && mention === myName) message.style.backgroundColor = "rgba(255, 255, 0, 0.15)";
+
 	messageList.appendChild(message);
 	messageList.scrollTo(0, messageList.scrollHeight);
 }
@@ -113,26 +115,17 @@ function startChat(username) {
 
 		if (type === "announce") announce(message);
 		else {
-			const { username, time } = data;
-			addMessage(username, message, time);
+			const { username, time, mention } = data;
+			addMessage(username, message, time, mention);
 		}
 	});
 }
 
 function roomRequest(roomName, username, type) {
-	if (!roomName) {
-		alert("Please enter room name.");
-		return;
-	} else if (!username) {
-		alert("Please enter username.");
-		return;
-	} else if (roomName.length > 20) {
-		alert("Your room name is so long.");
-		return;
-	} else if (username.length > 20) {
-		alert("Your username is so long.");
-		return;
-	}
+	if (!roomName) return alert("Please enter room name.");
+	else if (!username) return alert("Please enter username.");
+	else if (roomName.length > 20) return alert("Your room name is so long.");
+	else if (username.length > 20) return alert("Your username is so long.");
 
 	socket.emit("room", {
 		type,
