@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./style.css" />
+		<title>Messenger</title>
+	</head>
+	<body>
+		<div class="container">
+			<div class="navbar">
+				<a href="" class="brand">Chatob</a>
+				<div>
+					<!-- TODO: Make user list -->
+				</div>
+			</div>
+			<ul id="messageList"></ul>
+			<div class="inputs">
+				<textarea id="messageInput" class="input"></textarea>
+				<button id="sendButton" class="button">Send</button>
+			</div>
+		</div>
+		<div class="modal-bg">
+			<div class="modal" id="input">
+				<h1>Start chatting</h1>
+				<div>Room: <input type="text" class="input" id="roomInput" placeholder="Enter room name..." /></div>
+				<div>Username: <input type="text" class="input" id="usernameInput" placeholder="Enter username..." /></div>
+				<div>
+					<button class="button" id="createRoomButton">Create room</button>
+					<button class="button" id="joinRoomButton">Join room</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="./chat.js"></script>
+	</body>
+</html>
