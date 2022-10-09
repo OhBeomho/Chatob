@@ -87,10 +87,14 @@ io.on("connection", (socket) => {
 			room.join(username);
 			socket.join(roomName);
 
-			socket.emit("room", { type: "joined", username });
+			socket.emit("room", { type: "joined", username, userList: room.users });
 			io.to(roomName).emit("chatting", {
 				type: "announce",
 				message: username + " joined."
+			});
+			io.to(joinedRoom.roomName).emit("room", {
+				type: "userList",
+				userList: room.users
 			});
 		}
 	});
@@ -107,6 +111,10 @@ io.on("connection", (socket) => {
 			socket.to(joinedRoom.roomName).emit("chatting", {
 				type: "announce",
 				message: clientName + " left."
+			});
+			socket.to(joinedRoom.roomName).emit("room", {
+				type: "userList",
+				userList: joinedRoom.users
 			});
 
 			joinedRoom.leave(clientName);

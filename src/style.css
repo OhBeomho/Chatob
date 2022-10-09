@@ -35,6 +35,12 @@ body,
 .navbar a {
 	color: white;
 	text-decoration: none;
+	cursor: pointer;
+	user-select: none;
+}
+
+.navbar a:hover {
+	text-decoration: underline;
 }
 
 .navbar .brand {
@@ -156,11 +162,21 @@ body,
 	font-size: 12px;
 }
 
-.message .profile img {
+.message .profile img,
+#userList .user img {
 	border-radius: 50%;
+	border: 2px solid lightgray;
+}
+
+.message .profile img {
 	width: 60px;
 	height: 60px;
-	border: 1px solid lightgray;
+}
+
+#userList .user img {
+	width: 40px;
+	height: 40px;
+	margin-right: 5px;
 }
 
 .modal-bg {
@@ -189,4 +205,23 @@ body,
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+#userList {
+	width: 100%;
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+
+#userList .user {
+	padding: 5px 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#userList .user.me {
+	background-color: var(--primary-color);
+	color: white;
 }

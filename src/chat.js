@@ -1,13 +1,19 @@
 const socket = io();
 
 let myName;
+let users = [];
 
 const messageList = document.getElementById("messageList");
-const inputModal = document.getElementById("input");
+const userList = document.getElementById("userList");
+
+const inputModal = document.getElementById("inputModal");
+const userListModal = document.getElementById("userListModal");
+
 const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendButton");
 const roomInput = document.getElementById("roomInput");
 const usernameInput = document.getElementById("usernameInput");
+
+const sendButton = document.getElementById("sendButton");
 const createRoomButton = document.getElementById("createRoomButton");
 const joinRoomButton = document.getElementById("joinRoomButton");
 
@@ -29,6 +35,23 @@ function addMessage(username, text, time) {
 	messageList.scrollTo(0, messageList.scrollHeight);
 }
 
+function setUsers(users) {
+	userList.innerHTML = "";
+
+	for (let username of users) {
+		const user = document.createElement("li");
+		user.className = "user";
+		if (username === myName) user.classList.add("me");
+		user.innerHTML = `
+			<img src="./images/user.png" alt="" class="">
+			<div>${username}</div>
+		`;
+
+		if (username === myName) userList.prepend(user);
+		else userList.appendChild(user);
+	}
+}
+
 function announce(text) {
 	const message = document.createElement("li");
 	message.classList.add("message", "announce");
@@ -39,7 +62,6 @@ function announce(text) {
 
 createRoomButton.addEventListener("click", () => roomRequest(roomInput.value, usernameInput.value, "createRoom"));
 joinRoomButton.addEventListener("click", () => roomRequest(roomInput.value, usernameInput.value, "joinRoom"));
-
 messageInput.addEventListener("keydown", (e) => {
 	const key = e.key.toLowerCase();
 
@@ -57,19 +79,34 @@ sendButton.addEventListener("click", () => {
 
 	socket.emit("chatting", messageInput.value);
 	messageInput.value = "";
-})
+});
+document
+	.getElementById("showUserList")
+	.addEventListener("click", () => (userListModal.parentElement.style.display = "flex"));
+userListModal
+	.querySelector("#close")
+	.addEventListener("click", () => (userListModal.parentElement.style.display = "none"));
 
 socket.on("room", (data) => {
 	const { type, message, username } = data;
 
 	if (type === "error") alert(message);
-	else if (type === "created" || type === "joined") startChat(username);
+	else if (type === "created" || type === "joined") {
+		if (type === "created") users.push(username);
+		startChat(username);
+	}
+
+	if (type === "userList") {
+		users = data.userList;
+		setUsers(users);
+	}
 });
 
 function startChat(username) {
 	document.querySelector(".container").style.filter = inputModal.parentElement.style.display = "none";
 
 	myName = username;
+	setUsers(users);
 
 	socket.on("chatting", (data) => {
 		const { type, message } = data;
