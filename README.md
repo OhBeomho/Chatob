@@ -1,4 +1,8 @@
 # Chatob
 
-This is simple chatting app.
-I will add user list, mention, private chatting features.
+This is simple chatting app.  
+I will add mention, private chatting features.
+
+If you found a bug, message me.  
+> Discord: Obho0322#7681  
+> Email: ohbeomho0322@gmail.com
