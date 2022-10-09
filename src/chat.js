@@ -70,7 +70,6 @@ function startChat(username) {
 	document.querySelector(".container").style.filter = inputModal.parentElement.style.display = "none";
 
 	myName = username;
-	console.log(myName);
 
 	socket.on("chatting", (data) => {
 		const { type, message } = data;
