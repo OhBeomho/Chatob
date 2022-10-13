@@ -1,136 +1,143 @@
-const express = require("express");
-const app = express();
+const express = require("express")
+const app = express()
 
-const http = require("http");
-const server = http.createServer(app);
+const http = require("http")
+const server = http.createServer(app)
 
-const socketIO = require("socket.io");
-const io = new socketIO.Server(server);
+const socketIO = require("socket.io")
+const io = new socketIO.Server(server)
 
-const dayjs = require("dayjs");
-const path = require("path");
+const dayjs = require("dayjs")
+const path = require("path")
 
-app.use(express.static(path.join(__dirname, "src")));
-app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "src", "index.html")));
+app.use(express.static(path.join(__dirname, "src")))
+app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "src", "index.html")))
 
-const rooms = [];
+const rooms = []
 
 class Room {
-	constructor(roomName) {
-		this.roomName = roomName;
-		this.users = [];
+	constructor(roomName, maxUsers) {
+		this.roomName = roomName
+		this.maxUsers = maxUsers
+		this.users = []
 	}
 
 	join(username) {
-		this.users.push(username);
+		this.users.push(username)
 	}
 
 	leave(username) {
-		this.users.splice(this.users.indexOf(username), 1);
+		this.users.splice(this.users.indexOf(username), 1)
 	}
 }
 
 io.on("connection", (socket) => {
-	let joinedRoom, clientName;
+	let joinedRoom, clientName
 
 	socket.on("room", (data) => {
-		const { username, type, roomName } = data;
+		const { username, type, roomName } = data
 
-		const findRoom = (roomName) => rooms.find((r) => r.roomName === roomName);
-		const createRoom = (roomName) => {
-			const room = new Room(roomName);
-			room.join(username);
+		const findRoom = (roomName) => rooms.find((r) => r.roomName === roomName)
+		const createRoom = (roomName, maxUsers) => {
+			const room = new Room(roomName, maxUsers)
+			room.join(username)
 
-			socket.join(roomName);
-			rooms.push(room);
+			socket.join(roomName)
+			rooms.push(room)
 
-			joinedRoom = room;
-			clientName = username;
-		};
+			joinedRoom = room
+			clientName = username
+		}
 
 		if (type === "createRoom") {
 			if (findRoom(roomName)) {
 				socket.emit("room", {
 					type: "error",
 					message: `Room ${roomName} already exists.`
-				});
-				return;
+				})
+				return
 			}
 
-			createRoom(roomName);
+			createRoom(roomName, data.maxUsers)
 
-			socket.emit("room", { type: "created", username });
+			socket.emit("room", { type: "created", username })
 			io.to(roomName).emit("chatting", {
 				type: "announce",
 				message: username + " joined."
-			});
+			})
 		} else if (type === "joinRoom") {
-			const room = findRoom(roomName);
+			const room = findRoom(roomName)
 
 			if (!room) {
 				socket.emit("room", {
 					type: "error",
 					message: `Room ${roomName} does not exists.`
-				});
-				return;
+				})
+				return
 			} else if (room.users.includes(username)) {
 				socket.emit("room", {
 					type: "error",
 					message: `Someone is already using your username. '${username}'`
-				});
-				return;
+				})
+				return
+			} else if (room.users.length >= room.maxUsers) {
+				socket.emit("room", {
+					type: "error",
+					message: "The room is full."
+				})
+				return
 			}
 
-			clientName = username;
-			joinedRoom = room;
+			clientName = username
+			joinedRoom = room
 
-			room.join(username);
-			socket.join(roomName);
+			room.join(username)
+			socket.join(roomName)
 
-			socket.emit("room", { type: "joined", username, userList: room.users });
+			socket.emit("room", { type: "joined", username, userList: room.users })
 			io.to(roomName).emit("chatting", {
 				type: "announce",
 				message: username + " joined."
-			});
+			})
 			io.to(joinedRoom.roomName).emit("room", {
 				type: "userList",
 				userList: room.users
-			});
+			})
 		}
-	});
+	})
 	socket.on("chatting", (message) => {
 		const messageData = {
 			type: "general",
 			message,
 			time: dayjs(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })).format("h:mm A"),
 			username: clientName
-		};
+		}
 
 		for (let user of joinedRoom.users) {
 			if ((message + " ").includes(`@${user} `)) {
-				messageData.mention = user;
-				break;
+				messageData.mention = user
+				break
 			}
 		}
 
-		io.to(joinedRoom.roomName).emit("chatting", messageData);
-	});
+		io.to(joinedRoom.roomName).emit("chatting", messageData)
+	})
 	socket.on("disconnect", () => {
 		if (joinedRoom) {
 			socket.to(joinedRoom.roomName).emit("chatting", {
 				type: "announce",
 				message: clientName + " left."
-			});
+			})
 			socket.to(joinedRoom.roomName).emit("room", {
 				type: "userList",
 				userList: joinedRoom.users
-			});
+			})
 
-			joinedRoom.leave(clientName);
-			if (joinedRoom.users.length === 0) rooms.splice(rooms.indexOf(joinedRoom), 1);
+			joinedRoom.leave(clientName)
+			if (joinedRoom.users.length === 0) rooms.splice(rooms.indexOf(joinedRoom), 1)
 		}
-	});
-});
+	})
+})
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log("Server started. PORT: " + PORT));
+const PORT = process.env.PORT || 3000
+server.listen(PORT, () => console.log("Server started. PORT: " + PORT))
