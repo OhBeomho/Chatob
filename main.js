@@ -22,12 +22,12 @@ class Room {
 		this.users = []
 	}
 
-	join(username) {
-		this.users.push(username)
+	join(username, socket) {
+		this.users.push({ username, id: socket.id })
 	}
 
 	leave(username) {
-		this.users.splice(this.users.indexOf(username), 1)
+		this.users.splice(this.users.indexOf(this.users.find((user) => user.username === username)), 1)
 	}
 }
 
@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
 		const findRoom = (roomName) => rooms.find((r) => r.roomName === roomName)
 		const createRoom = (roomName, maxUsers) => {
 			const room = new Room(roomName, maxUsers)
-			room.join(username)
+			room.join(username, socket)
 
 			socket.join(roomName)
 			rooms.push(room)
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
 			if (findRoom(roomName)) {
 				socket.emit("room", {
 					type: "error",
-					message: `Room ${roomName} already exists.`
+					message: `Room '${roomName}' already exists.`
 				})
 				return
 			}
@@ -71,10 +71,10 @@ io.on("connection", (socket) => {
 			if (!room) {
 				socket.emit("room", {
 					type: "error",
-					message: `Room ${roomName} does not exists.`
+					message: `Room '${roomName}' does not exists.`
 				})
 				return
-			} else if (room.users.includes(username)) {
+			} else if (room.users.find((user) => user.username === username)) {
 				socket.emit("room", {
 					type: "error",
 					message: `Someone is already using your username. '${username}'`
@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
 			clientName = username
 			joinedRoom = room
 
-			room.join(username)
+			room.join(username, socket)
 			socket.join(roomName)
 
 			socket.emit("room", { type: "joined", username, userList: room.users })
@@ -108,15 +108,24 @@ io.on("connection", (socket) => {
 	socket.on("chatting", (message) => {
 		const messageData = {
 			type: "general",
-			message,
+			message: message.message,
 			time: dayjs(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })).format("h:mm A"),
 			username: clientName
 		}
 
-		for (let user of joinedRoom.users) {
-			if ((message + " ").includes(`@${user} `)) {
-				messageData.mention = user
-				break
+		if (message.to) {
+			messageData.mention = message.to
+			messageData.privateChatting = true
+			socket.to(joinedRoom.users.find((user) => user.username === message.to).id).emit("chatting", messageData)
+			socket.emit("chatting", messageData)
+
+			return
+		} else {
+			for (let user of joinedRoom.users) {
+				if ((message + " ").includes(`@${user.username} `)) {
+					messageData.mention = user.username
+					break
+				}
 			}
 		}
 

@@ -1,6 +1,7 @@
 const socket = io()
 
 let myName
+let privateChatTarget
 let users = []
 
 const messageList = document.getElementById("messageList")
@@ -19,7 +20,7 @@ const createRoomButton = document.getElementById("createRoomButton")
 const toggleCreateRoomButton = document.getElementById("toggleCreateRoomButton")
 const joinRoomButton = document.getElementById("joinRoomButton")
 
-function addMessage(username, text, time, mention) {
+function addMessage(username, text, time, mention, private = false) {
 	const className = username === myName ? "me" : "other"
 	const message = document.createElement("li")
 	message.classList.add("message", className)
@@ -33,7 +34,10 @@ function addMessage(username, text, time, mention) {
 			<div class="time">${time}</div>
 		</div>
 	`
-	if (mention && mention === myName) message.style.backgroundColor = "rgba(255, 255, 0, 0.15)"
+	if (mention) {
+		if (private) message.style.backgroundColor = "rgb(240, 240, 240)"
+		else if (mention === myName) message.style.backgroundColor = "rgba(255, 255, 0, 0.15)"
+	}
 
 	messageList.appendChild(message)
 	messageList.scrollTo(0, messageList.scrollHeight)
@@ -42,16 +46,16 @@ function addMessage(username, text, time, mention) {
 function setUsers(users) {
 	userList.innerHTML = ""
 
-	for (let username of users) {
+	for (let userObj of users) {
 		const user = document.createElement("li")
 		user.className = "user"
-		if (username === myName) user.classList.add("me")
+		if (userObj.username === myName) user.classList.add("me")
 		user.innerHTML = `
 			<img src="./images/user.png" alt="" class="">
-			<div>${username}</div>
+			<div>${userObj.username}</div>
 		`
 
-		if (username === myName) userList.prepend(user)
+		if (userObj.username === myName) userList.prepend(user)
 		else userList.appendChild(user)
 	}
 }
@@ -59,6 +63,14 @@ function setUsers(users) {
 function announce(text) {
 	const message = document.createElement("li")
 	message.classList.add("message", "announce")
+	message.innerText = text
+	messageList.appendChild(message)
+	messageList.scrollTo(0, messageList.scrollHeight)
+}
+
+function error(text) {
+	const message = document.createElement("li")
+	message.classList.add("message", "error")
 	message.innerText = text
 	messageList.appendChild(message)
 	messageList.scrollTo(0, messageList.scrollHeight)
@@ -75,25 +87,59 @@ messageInput.addEventListener("keydown", (e) => {
 
 	if (key === "enter" && !e.shiftKey) {
 		e.preventDefault()
-
-		if (!messageInput.value) return
-
-		socket.emit("chatting", messageInput.value)
-		messageInput.value = ""
+		chat(messageInput.value)
 	}
 })
-sendButton.addEventListener("click", () => {
-	if (!messageInput.value) return
-
-	socket.emit("chatting", messageInput.value)
-	messageInput.value = ""
-})
+sendButton.addEventListener("click", () => chat(messageInput.value))
 document
 	.getElementById("showUserList")
 	.addEventListener("click", () => (userListModal.parentElement.style.display = "flex"))
 userListModal
 	.querySelector("#close")
 	.addEventListener("click", () => (userListModal.parentElement.style.display = "none"))
+
+function chat(message) {
+	if (message === ":setpriv_none") {
+		privateChatTarget = null
+
+		document.getElementById("priv").remove()
+		messageInput.value = ""
+
+		return
+	} else if (message.startsWith(":setpriv")) {
+		const splitMessage = message.split(":")
+		const username = splitMessage[2]
+
+		if (!users.find((user) => user.username === username)) {
+			error(`User '${username}' does not exists.`)
+			return
+		} else if (username === myName) {
+			error("You cannot private chat with you.")
+			return
+		}
+
+		privateChatTarget = username
+
+		const privateChatting = document.createElement("div")
+		privateChatting.style.color = "gray"
+		privateChatting.id = "priv"
+		privateChatting.innerHTML = `
+			Private<br />
+			<strong>${username}</strong>
+		`;
+		document.querySelector(".inputs").prepend(privateChatting)
+
+		messageInput.value = ""
+
+		return
+	}
+
+	socket.emit("chatting", {
+		message,
+		to: privateChatTarget
+	})
+	messageInput.value = ""
+}
 
 socket.on("room", (data) => {
 	const { type, message, username } = data
@@ -121,8 +167,10 @@ function startChat(username) {
 
 		if (type === "announce") announce(message)
 		else {
-			const { username, time, mention } = data
-			addMessage(username, message, time, mention)
+			const { username, time, mention, privateChatting } = data
+
+			if (privateChatting) addMessage(username, message, time, mention, true)
+			else addMessage(username, message, time, mention)
 		}
 	})
 }

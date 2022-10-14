@@ -120,6 +120,11 @@ body,
 	font-size: 18px;
 }
 
+.message.error {
+	color: red;
+	font-size: 18px;
+}
+
 .message.me,
 .message.me .content {
 	flex-direction: row-reverse;
