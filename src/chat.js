@@ -99,14 +99,14 @@ userListModal
 	.addEventListener("click", () => (userListModal.parentElement.style.display = "none"))
 
 function chat(message) {
-	if (message === ":setpriv_none") {
+	if (message === ":public") {
 		privateChatTarget = null
 
 		document.getElementById("priv").remove()
 		messageInput.value = ""
 
 		return
-	} else if (message.startsWith(":setpriv")) {
+	} else if (message.startsWith(":private")) {
 		const splitMessage = message.split(":")
 		const username = splitMessage[2]
 
