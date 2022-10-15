@@ -115,7 +115,7 @@ io.on("connection", (socket) => {
 
 		if (message.to) {
 			messageData.mention = message.to
-			messageData.privateChatting = true
+			messageData.private = true
 			socket.to(joinedRoom.users.find((user) => user.username === message.to).id).emit("chatting", messageData)
 			socket.emit("chatting", messageData)
 

@@ -167,10 +167,9 @@ function startChat(username) {
 
 		if (type === "announce") announce(message)
 		else {
-			const { username, time, mention, privateChatting } = data
+			const { username, time, mention, private } = data
 
-			if (privateChatting) addMessage(username, message, time, mention, true)
-			else addMessage(username, message, time, mention)
+			addMessage(username, message, time, mention, private)
 		}
 	})
 }
