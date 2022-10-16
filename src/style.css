@@ -1,10 +1,12 @@
 * {
 	font-family: "Segoe UI Light";
+	transition: all 0.2s;
 }
 
 html,
 body {
 	margin: 0;
+	scroll-behavior: smooth;
 }
 
 body,
@@ -58,7 +60,7 @@ body,
 .inputs {
 	display: flex;
 	align-items: center;
-	padding: 10px;
+	padding: 15px 10px;
 	height: 80px;
 }
 
@@ -67,6 +69,22 @@ body,
 	height: 90%;
 	resize: none;
 	margin: 0 6px;
+	position: relative;
+}
+
+@keyframes invalidAnimation {
+	25% {
+		transform: translate(-10px);
+	}
+	50% {
+		transform: translate(5px);
+	}
+	75% {
+		transform: translate(-2.5px);
+	}
+	100% {
+		transform: 0;
+	}
 }
 
 .input {
@@ -111,6 +129,19 @@ body,
 	width: calc(100% - 20px);
 	padding: 10px;
 	display: flex;
+	position: relative;
+	animation: fadeInAnimation 0.3s forwards;
+}
+
+@keyframes fadeInAnimation {
+	from {
+		transform: translateY(-10px);
+		opacity: 0;
+	}
+	to {
+		transform: 0;
+		opacity: 1;
+	}
 }
 
 .message.announce {
@@ -149,6 +180,7 @@ body,
 	border-radius: 10px;
 	margin: 0 5px;
 	white-space: pre-wrap;
+	animation: fadeInAnimation 0.4s;
 }
 
 .message.me .content .message-bubble {
@@ -165,6 +197,7 @@ body,
 .message .content .time {
 	color: gray;
 	font-size: 12px;
+	animation: fadeInAnimation 0.5s;
 }
 
 .message .profile img,
@@ -198,6 +231,8 @@ body,
 	background-color: white;
 	padding: 20px;
 	border-radius: 10px;
+	min-width: 150px;
+	animation: fadeInAnimation 0.3s;
 }
 
 .modal > div {

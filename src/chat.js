@@ -90,6 +90,7 @@ messageInput.addEventListener("keydown", (e) => {
 		chat(messageInput.value)
 	}
 })
+messageInput.addEventListener("animationend", () => messageInput.style.animation = "none")
 sendButton.addEventListener("click", () => chat(messageInput.value))
 document
 	.getElementById("showUserList")
@@ -99,6 +100,11 @@ userListModal
 	.addEventListener("click", () => (userListModal.parentElement.style.display = "none"))
 
 function chat(message) {
+	if (!message) {
+		messageInput.style.animation = "invalidAnimation 0.4s"
+		return
+	}
+
 	if (message === ":public") {
 		privateChatTarget = null
 

@@ -65,6 +65,10 @@ io.on("connection", (socket) => {
 				type: "announce",
 				message: username + " joined."
 			})
+			io.to(joinedRoom.roomName).emit("room", {
+				type: "userList",
+				userList: joinedRoom.users
+			})
 		} else if (type === "joinRoom") {
 			const room = findRoom(roomName)
 

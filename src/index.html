@@ -17,16 +17,16 @@
 			</div>
 			<ul id="messageList"></ul>
 			<div class="inputs">
-				<textarea id="messageInput" class="input"></textarea>
+				<textarea id="messageInput" class="input" required></textarea>
 				<button id="sendButton" class="button">Send</button>
 			</div>
 		</div>
 		<div class="modal-bg">
 			<div class="modal" id="inputModal">
 				<h1>Start chatting</h1>
-				<div>Room: <input type="text" class="input" id="roomInput" placeholder="Enter room name..." /></div>
+				<div>Room: <input type="text" class="input" id="roomInput" placeholder="Enter room name..." required /></div>
 				<div>
-					Username: <input type="text" class="input" id="usernameInput" placeholder="Enter username..." />
+					Username: <input type="text" class="input" id="usernameInput" placeholder="Enter username..." required />
 				</div>
 				<div>
 					<button class="button" id="toggleCreateRoomButton">Create room</button>
@@ -41,6 +41,7 @@
 						max="100"
 						min="2"
 						placeholder="Max number of users"
+						required
 					/><br />
 					<button class="button" id="createRoomButton">Create</button>
 				</div>
