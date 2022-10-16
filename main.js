@@ -109,27 +109,27 @@ io.on("connection", (socket) => {
 			})
 		}
 	})
-	socket.on("chatting", (message) => {
+	socket.on("chatting", (data) => {
 		const messageData = {
 			type: "general",
-			message: message.message,
+			message: data.message,
 			time: dayjs(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })).format("h:mm A"),
 			username: clientName
 		}
 
-		if (message.to) {
-			messageData.mention = message.to
+		if (data.to) {
+			messageData.mention = data.to
 			messageData.private = true
-			socket.to(joinedRoom.users.find((user) => user.username === message.to).id).emit("chatting", messageData)
+			socket.to(joinedRoom.users.find((user) => user.username === data.to).id).emit("chatting", messageData)
 			socket.emit("chatting", messageData)
 
 			return
-		} else {
-			for (let user of joinedRoom.users) {
-				if ((message + " ").includes(`@${user.username} `)) {
-					messageData.mention = user.username
-					break
-				}
+		}
+
+		for (let user of joinedRoom.users) {
+			if ((data.message + " ").includes(`@${user.username} `)) {
+				messageData.mention = user.username
+				break
 			}
 		}
 
