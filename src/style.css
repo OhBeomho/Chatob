@@ -1,5 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
+
 * {
-	font-family: "Segoe UI Light";
+	font-family: "Open Sans", sans-serif;
 	transition: all 0.2s;
 }
 
@@ -166,31 +168,32 @@ body,
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 }
 
 .message .content {
 	display: flex;
 	align-items: flex-end;
-	padding: 8px 0;
+	max-width: 50%;
+	padding: 20px 0;
 }
 
 .message .content .message-bubble {
 	padding: 6px;
-	border-radius: 10px;
+	border-radius: 14px;
 	margin: 0 5px;
+	max-width: 100%;
+	word-wrap: break-word;
 	white-space: pre-wrap;
 	animation: fadeInAnimation 0.4s;
 }
 
 .message.me .content .message-bubble {
 	background-color: var(--primary-color);
-	border-bottom-right-radius: 0;
 	color: white;
 }
 
 .message.other .content .message-bubble {
-	border-bottom-left-radius: 0;
 	background-color: lightgray;
 }
 
