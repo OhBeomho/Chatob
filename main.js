@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
 
 			createRoom(roomName, data.maxUsers)
 
-			socket.emit("room", { type: "created", username })
+			socket.emit("room", { type: "created", username, roomName })
 			io.to(roomName).emit("chatting", {
 				type: "announce",
 				message: username + " joined."
@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
 			room.join(username, socket)
 			socket.join(roomName)
 
-			socket.emit("room", { type: "joined", username, userList: room.users })
+			socket.emit("room", { type: "joined", username, userList: room.users, roomName })
 			io.to(roomName).emit("chatting", {
 				type: "announce",
 				message: username + " joined."

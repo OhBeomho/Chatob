@@ -266,5 +266,6 @@ body,
 
 #userList .user.me {
 	background-color: var(--primary-color);
+	border-radius: 5px;
 	color: white;
 }

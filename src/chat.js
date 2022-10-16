@@ -148,12 +148,13 @@ function chat(message) {
 }
 
 socket.on("room", (data) => {
-	const { type, message, username } = data
+	const { type, message, username, roomName } = data
 
 	if (type === "error") alert(message)
 	else if (type === "created" || type === "joined") {
 		if (type === "created") users.push(username)
 		startChat(username)
+		document.getElementById("roomName").innerHTML = `Room Name<br /><strong>${roomName}</strong>`
 	}
 
 	if (type === "userList") {
