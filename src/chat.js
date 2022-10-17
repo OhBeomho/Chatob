@@ -162,7 +162,7 @@ socket.on("room", (data) => {
 })
 
 function startChat(username) {
-	document.querySelector(".container").style.filter = inputModal.parentElement.style.display = "none"
+	document.querySelector("main").style.filter = inputModal.parentElement.style.display = "none"
 
 	myName = username
 	setUsers(users)

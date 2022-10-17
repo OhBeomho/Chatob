@@ -12,13 +12,13 @@ body {
 }
 
 body,
-.container {
+main {
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
 }
 
-.container {
+main {
 	filter: blur(2px);
 }
 
@@ -26,7 +26,7 @@ body,
 	--primary-color: rgb(255, 0, 100);
 }
 
-.navbar {
+nav {
 	background-color: var(--primary-color);
 	color: white;
 	display: flex;
@@ -36,18 +36,18 @@ body,
 	height: 80px;
 }
 
-.navbar a {
+nav a {
 	color: white;
 	text-decoration: none;
 	cursor: pointer;
 	user-select: none;
 }
 
-.navbar a:hover {
+nav a:hover {
 	text-decoration: underline;
 }
 
-.navbar .brand {
+nav .brand {
 	font-size: 30px;
 }
 
