@@ -8,6 +8,22 @@
 		<title>Chatob</title>
 	</head>
 	<body>
+		<div class="intro">
+			<svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<g clip-path="url(#clip0_1_2)">
+					<path
+						d="M85.3553 14.6447C78.3627 7.65203 69.4536 2.88999 59.7545 0.960735C50.0555 -0.968525 40.0021 0.0216432 30.8658 3.80603C21.7295 7.59041 13.9206 13.999 8.42652 22.2215C2.93245 30.444 -1.49321e-06 40.1109 0 50C1.49321e-06 59.8891 2.93245 69.5561 8.42652 77.7785C13.9206 86.001 21.7295 92.4096 30.8658 96.194C40.0021 99.9784 50.0555 100.969 59.7545 99.0393C69.4536 97.11 78.3627 92.348 85.3553 85.3553L74.7487 74.7487C69.8539 79.6436 63.6175 82.977 56.8282 84.3275C50.0388 85.678 43.0015 84.9849 36.6061 82.3358C30.2107 79.6867 24.7444 75.2007 20.8986 69.445C17.0527 63.6892 15 56.9224 15 50C15 43.0777 17.0527 36.3108 20.8986 30.555C24.7444 24.7993 30.2107 20.3133 36.6061 17.6642C43.0015 15.0152 50.0388 14.322 56.8282 15.6725C63.6175 17.023 69.8539 20.3564 74.7487 25.2513L85.3553 14.6447Z"
+						fill="#FF0064"
+					/>
+				</g>
+				<defs>
+					<clipPath id="clip0_1_2">
+						<rect width="100" height="100" fill="white" />
+					</clipPath>
+				</defs>
+			</svg>
+			<span>hatob</span>
+		</div>
 		<main>
 			<nav>
 				<a class="brand">Chatob</a>
@@ -25,9 +41,12 @@
 		<div class="modal-bg">
 			<div class="modal" id="inputModal">
 				<h1>Start chatting</h1>
-				<div>Room: <input type="text" class="input" id="roomInput" placeholder="Enter room name..." required /></div>
 				<div>
-					Username: <input type="text" class="input" id="usernameInput" placeholder="Enter username..." required />
+					Room: <input type="text" class="input" id="roomInput" placeholder="Enter room name..." required />
+				</div>
+				<div>
+					Username:
+					<input type="text" class="input" id="usernameInput" placeholder="Enter username..." required />
 				</div>
 				<div>
 					<button class="button" id="toggleCreateRoomButton">Create room</button>
@@ -57,7 +76,7 @@
 			</div>
 		</div>
 
-		<script src="/socket.io/socket.io.js"></script>
-		<script src="./chat.js"></script>
+		<!-- <script src="/socket.io/socket.io.js"></script>
+		<script src="./chat.js"></script> -->
 	</body>
 </html>

@@ -23,7 +23,7 @@ main {
 }
 
 :root {
-	--primary-color: rgb(255, 0, 100);
+	--primary-color: #ff0064;
 }
 
 nav {
@@ -100,7 +100,7 @@ nav .brand {
 }
 
 .input:focus {
-	box-shadow: 0 0 0 3px rgba(255, 0, 100, 0.3);
+	box-shadow: 0 0 0 3px #ff00644c;
 }
 
 .inputs #sendButton {
@@ -120,11 +120,11 @@ nav .brand {
 }
 
 .button:hover {
-	background-color: rgb(200, 0, 78);
+	background-color: #c8004e;
 }
 
 .button:focus {
-	box-shadow: 0 0 0 4px rgba(255, 0, 100, 0.4);
+	box-shadow: 0 0 0 4px #ff006466;
 }
 
 .message {
@@ -227,7 +227,7 @@ nav .brand {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(0, 0, 0, 0.2);
+	background-color: #00000033;
 }
 
 .modal {
@@ -273,4 +273,66 @@ nav .brand {
 	background-color: var(--primary-color);
 	border-radius: 5px;
 	color: white;
+}
+
+.intro {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: white;
+	z-index: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	animation: fadeOutAnimation 2s 4s forwards;
+}
+
+.intro svg {
+	opacity: 0;
+	animation: introAnimation 2s 1s forwards;
+}
+
+.intro span {
+	opacity: 0;
+	font-size: 70px;
+	font-weight: bold;
+	animation: introTextAnimation 1s 2.2s forwards;
+}
+
+@keyframes introAnimation {
+	0% {
+		opacity: 0;
+		transform: rotate(360deg);
+	}
+	50% {
+		opacity: 1;
+		transform: rotate(0deg);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes introTextAnimation {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOutAnimation {
+	0% {
+		opacity: 1;
+	}
+	25% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 0;
+		z-index: -2;
+	}
 }
