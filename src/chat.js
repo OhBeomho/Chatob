@@ -143,6 +143,7 @@ function chat(message) {
 		to: privateChatTarget
 	})
 	messageInput.value = ""
+	messageInput.focus()
 }
 
 socket.on("room", (data) => {
