@@ -250,6 +250,11 @@ body,
 	align-items: center;
 }
 
+#private {
+	color: gray;
+	text-align: center;
+}
+
 #userList {
 	width: 100%;
 	padding: 10px;

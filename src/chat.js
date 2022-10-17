@@ -108,7 +108,7 @@ function chat(message) {
 	if (message === ":public") {
 		privateChatTarget = null
 
-		document.getElementById("priv").remove()
+		document.getElementById("private").style.display = "none"
 		messageInput.value = ""
 
 		return
@@ -126,14 +126,12 @@ function chat(message) {
 
 		privateChatTarget = username
 
-		const privateChatting = document.createElement("div")
-		privateChatting.style.color = "gray"
-		privateChatting.id = "priv"
+		const privateChatting = document.getElementById("private")
 		privateChatting.innerHTML = `
 			Private<br />
 			<strong>${username}</strong>
 		`;
-		document.querySelector(".inputs").prepend(privateChatting)
+		privateChatting.style.display = "block"
 
 		messageInput.value = ""
 
