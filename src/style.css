@@ -18,10 +18,6 @@ main {
 	flex-direction: column;
 }
 
-main {
-	filter: blur(2px);
-}
-
 :root {
 	--primary-color: #ff0064;
 }
@@ -76,16 +72,16 @@ nav .brand {
 
 @keyframes invalidAnimation {
 	25% {
-		transform: translate(-10px);
+		transform: translateX(-10px);
 	}
 	50% {
-		transform: translate(5px);
+		transform: translateX(5px);
 	}
 	75% {
-		transform: translate(-2.5px);
+		transform: translateX(-2.5px);
 	}
 	100% {
-		transform: 0;
+		transform: translateX(0);
 	}
 }
 
@@ -141,7 +137,7 @@ nav .brand {
 		opacity: 0;
 	}
 	to {
-		transform: 0;
+		transform: translateY(0);
 		opacity: 1;
 	}
 }
@@ -151,6 +147,10 @@ nav .brand {
 	align-items: center;
 	color: gray;
 	font-size: 18px;
+}
+
+.message a {
+	color: white;
 }
 
 .message.error {
@@ -275,7 +275,7 @@ nav .brand {
 	color: white;
 }
 
-.intro {
+.room {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -284,21 +284,31 @@ nav .brand {
 	background-color: white;
 	z-index: 2;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	animation: fadeOutAnimation 2s 4s forwards;
 }
 
-.intro svg {
+.room svg {
 	opacity: 0;
 	animation: introAnimation 2s 1s forwards;
 }
 
-.intro span {
+.room #introText {
 	opacity: 0;
 	font-size: 70px;
 	font-weight: bold;
 	animation: introTextAnimation 1s 2.2s forwards;
+}
+
+.room #roomInputDiv {
+	opacity: 0;
+	text-align: center;
+	animation: fadeInAnimation 1s 3s forwards;
+}
+
+.room #createRoomDiv {
+	animation: fadeInAnimation 0.3s;
 }
 
 @keyframes introAnimation {

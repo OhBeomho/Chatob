@@ -7,7 +7,6 @@ let users = []
 const messageList = document.getElementById("messageList")
 const userList = document.getElementById("userList")
 
-const inputModal = document.getElementById("inputModal")
 const userListModal = document.getElementById("userListModal")
 
 const messageInput = document.getElementById("messageInput")
@@ -76,8 +75,8 @@ function error(text) {
 	messageList.scrollTo(0, messageList.scrollHeight)
 }
 
-createRoomButton.addEventListener("click", () => roomRequest(roomInput.value, usernameInput.value, "createRoom"))
-joinRoomButton.addEventListener("click", () => roomRequest(roomInput.value, usernameInput.value, "joinRoom"))
+const createRoomEvent = () => roomRequest(roomInput.value, usernameInput.value, "createRoom")
+const joinRoomEvent = () => roomRequest(roomInput.value, usernameInput.value, "joinRoom")
 toggleCreateRoomButton.addEventListener("click", () => {
 	const createRoomDiv = document.getElementById("createRoomDiv")
 	createRoomDiv.style.display = createRoomDiv.style.display === "block" ? "none" : "block"
@@ -90,7 +89,7 @@ messageInput.addEventListener("keydown", (e) => {
 		chat(messageInput.value)
 	}
 })
-messageInput.addEventListener("animationend", () => messageInput.style.animation = "none")
+messageInput.addEventListener("animationend", () => (messageInput.style.animation = "none"))
 sendButton.addEventListener("click", () => chat(messageInput.value))
 document
 	.getElementById("showUserList")
@@ -99,8 +98,13 @@ userListModal
 	.querySelector("#close")
 	.addEventListener("click", () => (userListModal.parentElement.style.display = "none"))
 
+setTimeout(() => {
+	createRoomButton.addEventListener("click", createRoomEvent)
+	joinRoomButton.addEventListener("click", joinRoomEvent)
+}, 3000)
+
 function chat(message) {
-	if (!message) {
+	if (!message.trim()) {
 		messageInput.style.animation = "invalidAnimation 0.4s"
 		return
 	}
@@ -130,12 +134,30 @@ function chat(message) {
 		privateChatting.innerHTML = `
 			Private<br />
 			<strong>${username}</strong>
-		`;
+		`
 		privateChatting.style.display = "block"
 
 		messageInput.value = ""
 
 		return
+	}
+
+	String.prototype.replaceString = function (start, end = this.length, newString) {
+		return this.slice(0, start) + newString + this.slice(start + Math.abs(end))
+	}
+
+	const splitMessage = message.split(/[\s,]/)
+	for (let word of splitMessage) {
+		if (
+			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+				word
+			)
+		)
+			message = message.replaceString(
+				message.indexOf(word),
+				message.indexOf(word) + word.length,
+				`<a href="${word}">${word}</a>`
+			)
 	}
 
 	socket.emit("chatting", {
@@ -163,7 +185,11 @@ socket.on("room", (data) => {
 })
 
 function startChat(username) {
-	document.querySelector("main").style.filter = inputModal.parentElement.style.display = "none"
+	document.querySelector(".room").style.animation = "fadeOutAnimation 2s forwards"
+	setTimeout(() => document.querySelector(".room").remove(), 2000)
+
+	createRoomButton.removeEventListener("click", createRoomEvent)
+	joinRoomButton.removeEventListener("click", joinRoomEvent)
 
 	myName = username
 	setUsers(users)
