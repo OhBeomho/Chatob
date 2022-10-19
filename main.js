@@ -107,7 +107,7 @@ io.on("connection", (socket) => {
 				type: "userList",
 				userList: room.users
 			})
-		}
+		} else if (type === "roomList") socket.emit("room", { type: "roomList", roomList: rooms})
 	})
 	socket.on("chatting", (data) => {
 		const messageData = {

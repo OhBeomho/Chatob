@@ -3,9 +3,11 @@ const socket = io()
 let myName
 let privateChatTarget
 let users = []
+let rooms = []
 
 const messageList = document.getElementById("messageList")
 const userList = document.getElementById("userList")
+const roomList = document.getElementById("roomList")
 
 const userListModal = document.getElementById("userListModal")
 
@@ -17,6 +19,7 @@ const maxUsersInput = document.getElementById("maxUsersInput")
 const sendButton = document.getElementById("sendButton")
 const createRoomButton = document.getElementById("createRoomButton")
 const toggleCreateRoomButton = document.getElementById("toggleCreateRoomButton")
+const toggleRoomListButton = document.getElementById("toggleRoomListButton")
 const joinRoomButton = document.getElementById("joinRoomButton")
 
 function addMessage(username, text, time, mention, private = false) {
@@ -59,6 +62,49 @@ function setUsers(users) {
 	}
 }
 
+const refreshButton = document.createElement("button")
+refreshButton.innerHTML = `<svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32px" height="32px"><path d="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z"/></svg>`
+refreshButton.classList.add("button", "refresh")
+refreshButton.addEventListener("click", () => socket.emit("room", { type: "roomList" }))
+
+function setRoomList(rooms) {
+	roomList.innerHTML = `
+		<div style="position: absolute; top: 0; width: 100%; text-align: center">
+			<h1>Room List</h1>
+		</div>
+	`
+	roomList.appendChild(refreshButton)
+
+	if (rooms.length === 0) {
+		const noRooms = document.createElement("div")
+		noRooms.style.color = "gray"
+		noRooms.innerText = "No rooms found."
+		roomList.appendChild(noRooms)
+
+		return
+	}
+
+	for (let i = 0; i < (rooms.length < 10 ? rooms.length : 10); i++) {
+		const room = document.createElement("div")
+		room.className = "roomDiv"
+		room.innerHTML = `
+			<h2>${rooms[i].roomName}</h2>
+			<div class="users">Users: ${rooms[i].users.length}/${rooms[i].maxUsers}</div>
+		`
+
+		const joinButton = document.createElement("button")
+		joinButton.className = "button"
+		joinButton.innerText = "Join"
+		joinButton.addEventListener("click", () => {
+			roomInput.value = rooms[i].roomName
+			joinRoomButton.click()
+		})
+
+		room.appendChild(joinButton)
+		roomList.appendChild(room)
+	}
+}
+
 function announce(text) {
 	const message = document.createElement("li")
 	message.classList.add("message", "announce")
@@ -77,9 +123,19 @@ function error(text) {
 
 const createRoomEvent = () => roomRequest(roomInput.value, usernameInput.value, "createRoom")
 const joinRoomEvent = () => roomRequest(roomInput.value, usernameInput.value, "joinRoom")
+setTimeout(() => {
+	createRoomButton.addEventListener("click", createRoomEvent)
+	joinRoomButton.addEventListener("click", joinRoomEvent)
+}, 3000)
+
 toggleCreateRoomButton.addEventListener("click", () => {
 	const createRoomDiv = document.getElementById("createRoomDiv")
 	createRoomDiv.style.display = createRoomDiv.style.display === "block" ? "none" : "block"
+})
+toggleRoomListButton.addEventListener("click", () => {
+	socket.emit("room", { type: "roomList" })
+
+	roomList.style.display = roomList.style.display === "grid" ? "none" : "grid"
 })
 messageInput.addEventListener("keydown", (e) => {
 	const key = e.key.toLowerCase()
@@ -97,11 +153,6 @@ document
 userListModal
 	.querySelector("#close")
 	.addEventListener("click", () => (userListModal.parentElement.style.display = "none"))
-
-setTimeout(() => {
-	createRoomButton.addEventListener("click", createRoomEvent)
-	joinRoomButton.addEventListener("click", joinRoomEvent)
-}, 3000)
 
 function chat(message) {
 	if (!message.trim()) {
@@ -181,6 +232,9 @@ socket.on("room", (data) => {
 	if (type === "userList") {
 		users = data.userList
 		setUsers(users)
+	} else if (type === "roomList") {
+		rooms = data.roomList
+		setRoomList(rooms)
 	}
 })
 

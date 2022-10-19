@@ -289,7 +289,7 @@ nav .brand {
 	align-items: center;
 }
 
-.room svg {
+.room #introIcon {
 	opacity: 0;
 	animation: introAnimation 2s 1s forwards;
 }
@@ -307,8 +307,48 @@ nav .brand {
 	animation: fadeInAnimation 1s 3s forwards;
 }
 
-.room #createRoomDiv {
+.room #createRoomDiv,
+.room #roomList {
 	animation: fadeInAnimation 0.3s;
+	min-width: 30vw;
+	max-width: 90vw;
+}
+
+.room #createRoomDiv {
+	display: none;
+	text-align: center;
+}
+
+.room #roomList {
+	position: relative;
+	display: none;
+	grid-template-columns: repeat(3, auto);
+	gap: 15px;
+	padding: 20px;
+	padding-top: 80px;
+	margin-top: 40px;
+	max-height: calc(200px * 2);
+	overflow: auto;
+}
+
+.room .button.refresh {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 10px;
+	padding-bottom: 0;
+}
+
+.room .roomDiv {
+	padding: 20px;
+	width: calc(100% - 40px);
+	height: 160px;
+	border-radius: 20px;
+	box-shadow: 0 4px 10px 3px rgba(0, 0, 0, 0.1);
+}
+
+.room .roomDiv .users {
+	color: gray;
 }
 
 @keyframes introAnimation {
