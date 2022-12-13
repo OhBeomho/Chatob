@@ -3,6 +3,7 @@ import { Account } from '../database.mjs'
 
 const router = Router()
 
+// 로그인
 router
 	.route('/login')
 	.get((_, res) => res.render('login.html'))
@@ -16,6 +17,8 @@ router
 			})
 			.catch((err) => res.render('error', { err }))
 	})
+
+// 회원가입
 router
 	.route('/signup')
 	.get((_, res) => res.render('signup.html'))
@@ -26,6 +29,8 @@ router
 			.then(() => res.redirect('/login'))
 			.catch((err) => res.render('error', { err }))
 	})
+
+// ID 중복확인
 router.get('/idcheck/:id', (req, res) =>
 	Account.id_check(req.params.id)
 		.then((unique) => res.send({ unique }))
