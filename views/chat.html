@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Chatob</title>
+		<link rel="stylesheet" href="/css/main.css" />
+	</head>
+	<body>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			const socket = io('/chat')
+			const room = new URL(location.href).searchParams.get('room')
+
+			socket.on('room', (data) => {
+				if (data === 'NOT_EXISTS') alert('존재하지 않는 방입니다.')
+				else if (data === 'FULL') alert('방 인원이 가득 찼습니다.')
+				else {
+					socket.removeAllListeners('room')
+					start_chat()
+				}
+			})
+			socket.emit('room', room)
+
+			function start_chat() {
+				socket.on('chat', (data) => {
+					const { username, message } = data
+					const time = new Date().toLocaleTimeString('en-US')
+
+					// TODO: Add chat bubble to chat list
+				})
+				// TODO: Add event listener to button and textarea
+			}
+		</script>
+	</body>
+</html>

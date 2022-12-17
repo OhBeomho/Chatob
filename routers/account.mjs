@@ -26,7 +26,7 @@ router
 		const { id, password } = req.body
 
 		Account.sign_up(id, password)
-			.then(() => res.redirect('/login'))
+			.then(() => res.redirect('/account/login'))
 			.catch((err) => res.render('error', { err }))
 	})
 
@@ -36,5 +36,12 @@ router.get('/idcheck/:id', (req, res) =>
 		.then((unique) => res.send({ unique }))
 		.catch((err) => res.status(500).send(err))
 )
+
+// 로그아웃
+router.get('/logout', (req, res) => {
+	if (req.session.user) req.session.destroy()
+
+	res.redirect('/')
+})
 
 export default router

@@ -28,6 +28,11 @@ try {
 }
 
 export class Account {
+	// 계정 정보 가져오기
+	static async get(id) {
+		return (await db.query('SELECT id, friends, requests FROM account WHERE id = $1', [id])).rows[0]
+	}
+
 	// 로그인
 	static async login(id, password) {
 		const account = (await db.query('SELECT password FROM account WHERE id = $1', [id])).rows[0]
@@ -54,7 +59,7 @@ export class Account {
 	// 요청 수락
 	static async accept_request(id, request_id) {
 		await db.query('UPDATE account SET requests = ARRAY_REMOVE(requests, $1) WHERE id = $2', [request_id, id])
-		await Account.add_friend(id, request_id)
+		await Account.#add_friend(id, request_id)
 	}
 
 	// 요청 거절
@@ -63,7 +68,7 @@ export class Account {
 	}
 
 	// 친구 추가
-	static async add_friend(id_1, id_2) {
+	static async #add_friend(id_1, id_2) {
 		const sql = 'UPDATE account SET friends = ARRAY_APPEND(friends, $1) WHERE id = $2'
 		await db.query(sql, [id_1, id_2])
 		await db.query(sql, [id_2, id_1])

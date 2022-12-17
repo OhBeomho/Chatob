@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Chatob</title>
+		<link rel="stylesheet" href="/css/main.css" />
+		<style>
+			.status-circle {
+				display: inline-block;
+				width: 15px;
+				height: 15px;
+				border-radius: 15px;
+			}
+
+			.status-circle.online {
+				background-color: rgb(0, 120, 255);
+			}
+
+			.status-circle.chatting {
+				background-color: rgb(50, 170, 0);
+			}
+
+			.status-circle.offline {
+				background-color: gray;
+			}
+
+			#friend_list img {
+				width: 35px;
+				height: 35px;
+				border-radius: 50%;
+			}
+
+			#online_friend_list img {
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+			}
+
+			#request_list img {
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+			}
+
+			ul {
+				flex: 1;
+				list-style: none;
+				padding: 0;
+				margin: 20px;
+			}
+
+			li {
+				padding: 8px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			li > * {
+				display: flex;
+				align-items: center;
+				gap: 5px;
+			}
+
+			li.title {
+				font-size: 20px;
+				font-weight: bold;
+			}
+
+			dialog {
+				padding: 20px;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<% if (!id) { %>
+		<nav>
+			<a href="/" class="brand">Chatob</a>
+			<div>
+				<a href="/account/login">로그인</a>
+				<a href="/account/signup">회원가입</a>
+			</div>
+		</nav>
+		<main
+			style="
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+			"
+		>
+			<h1>Chatob</h1>
+			<p>
+				간단한 채팅 사이트<br />
+				<button onclick="location.assign('/account/login')">로그인하기</button>
+			</p>
+		</main>
+		<% } else { %>
+		<nav>
+			<a href="/" class="brand">Chatob</a>
+			<div>
+				<a onclick="document.querySelector('dialog#request').showModal()">친구 추가하기</a>
+				<a href="/account/logout">로그아웃</a>
+			</div>
+		</nav>
+		<main style="display: flex">
+			<ul id="friend_list">
+				<li class="title">친구 목록</li>
+				<% if (friends.length > 0) { %> <% for (let friend of friends) { %>
+				<li>
+					<span>
+						<img src="/images/user.png" alt="" />
+						<span><%= friend.name %></span>
+					</span>
+					<span
+						class="status-circle <%= friend.online ? 'online' : (friend.chatting ? 'chatting' : 'offline') %>"
+					></span>
+				</li>
+				<% }} else { %> 아직 친구를 추가하지 않으셨습니다.<br />
+				<button type="button" onclick="document.querySelector('dialog#request').showModal()">
+					친구 추가하기
+				</button>
+				<% } %>
+			</ul>
+			<div style="flex: 2; display: flex; flex-direction: column">
+				<ul id="online_friend_list">
+					<li class="title">온라인</li>
+					<% const online_friends = friends.filter((friend) => friend.online || friend.chatting) %> <% if
+					(online_friends.length > 0) { %> <% for (let friend of online_friends) { %>
+					<li>
+						<span>
+							<img src="/images/user.png" alt="" />
+							<span><%= friend.name %></span>
+						</span>
+						<span>
+							<% if (friend.online) { %>
+							<button type="button" onclick="chat_request('<%= friend.name %>')">채팅 요청 보내기</button>
+							<% } %> <%= friend.online ? '온라인' : '채팅 중' %>
+							<span class="status-circle <%= friend.online ? 'online' : 'chatting' %>"></span>
+						</span>
+					</li>
+					<% }} else { %> 온라인인 친구가 없습니다. <% } %>
+				</ul>
+				<ul id="request_list">
+					<li class="title">요청 목록</li>
+					<% if (requests.length > 0) { %> <% for (let request of requests) { %>
+					<li>
+						<span><%= request %>님의 친구 요청</span>
+						<span>
+							<button
+								onclick="accept_request('<%= request %>')"
+								style="background-color: green !important"
+							>
+								수락
+							</button>
+							<button
+								onclick="decline_request('<%= request %>')"
+								style="background-color: rgb(200, 0, 0) !important"
+							>
+								거절
+							</button>
+						</span>
+					</li>
+					<% }} else { %> 요청이 없습니다. <% } %>
+				</ul>
+			</div>
+			<div style="flex: 0.5; display: flex; flex-direction: column; justify-content: center; align-items: center">
+				<h2>방 만들기</h2>
+				<p>
+					방 이름: <input type="text" id="create_room_name" /><br />
+					최대 인원: <input type="number" id="max_users" min="2" max="100" /><br />
+					<button
+						type="button"
+						onclick="create_room(document.querySelector('input#create_room_name').value, document.querySelector('input#max_users').valueAsNumber)"
+					>
+						만들기
+					</button>
+				</p>
+				<h2>방 참가하기</h2>
+				<p>
+					방 이름: <input type="text" id="join_room_name" /><br />
+					<button
+						type="button"
+						onclick="popup_center('/chat?room=' + document.querySelector('input#join_room_name').value, 'Chatob 채팅', 300, 550)"
+					>
+						참가하기
+					</button>
+				</p>
+			</div>
+		</main>
+
+		<dialog id="request">
+			<h1>친구 추가하기</h1>
+			<p>친구 추가할 ID를 입력하여 친구를 추가할 수 있습니다.</p>
+			<p>
+				<input type="text" id="friend_request_id" minlength="3" maxlength="20" /><br />
+				<button type="button" onclick="friend_request(document.querySelector('input#friend_request_id').value)">
+					친구 요청 보내기
+				</button>
+				<button type="button" onclick="document.querySelector('dialog#request').close()">닫기</button>
+			</p>
+		</dialog>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			const socket = io('/')
+
+			socket.on('request', (data) => {
+				const { type } = data
+
+				if (type === 'ERROR') alert(data.message)
+				else if (type === 'DECLINE') alert(data.id + '님이 채팅 요청을 거절하였습니다.')
+				else if (type === 'ACCEPT') popup_center('/chat?room=' + data.room_name, 'Chatob 채팅', 300, 550)
+				else if (type === 'REQUEST') {
+					if (confirm(data.from_id + '님이 채팅 요청을 보냈습니다.\n'))
+						socket.emit('request', { type: 'ACCEPT', request_id: data.from_id })
+					else {
+						socket.emit('request', { type: 'DECLINE', request_id: data.from_id })
+						alert(data.from_id + '님의 채팅 요청을 거절하였습니다.')
+					}
+				}
+			})
+			socket.on('create_room', (data) => {
+				if (data === 'EXISTS') alert('다른 방 이름을 사용해 주세요.')
+				else popup_center('/chat?room=' + data, 'Chatob 채팅', 300, 550)
+			})
+
+			function create_room(room_name, max_users) {
+				socket.emit('create_room', { room_name, max_users })
+			}
+
+			function chat_request(id) {
+				socket.emit('request', { type: 'REQUEST', request_id: id })
+			}
+
+			function friend_request(id) {
+				xhr('GET', '/friend/request/' + id, (status, response) => {
+					if (status === 200) {
+						alert('친구 요청을 보냈습니다.')
+					} else if (status === 500) {
+						alert('서버에서 오류가 발생했습니다.')
+						console.error(response)
+					}
+				})
+			}
+
+			function accept_request(id) {
+				xhr('GET', '/friend/accept/' + id, (status, response) => {
+					if (status === 200) {
+						alert(id + '님의 친구 요청을 수락했습니다.')
+						location.reload()
+					} else if (status === 500) {
+						alert('서버에서 오류가 발생했습니다.')
+						console.error(response)
+					}
+				})
+			}
+
+			function decline_request(id) {
+				xhr('GET', '/friend/decline/' + id, (status, response) => {
+					if (status === 200) {
+						alert(id + '님의 친구 요청을 거절했습니다.')
+						location.reload()
+					} else if (status === 500) {
+						alert('서버에서 오류가 발생했습니다.')
+						console.error(response)
+					}
+				})
+			}
+
+			function xhr(method, url, callback) {
+				const xhr = new XMLHttpRequest()
+				xhr.open(method, url)
+				xhr.send()
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState === XMLHttpRequest.DONE) callback(xhr.status, xhr.response)
+				}
+			}
+
+			// https://stackoverflow.com/questions/4068373/center-a-popup-window-on-screen
+			function popup_center(url, title, w, h) {
+				// Fixes dual-screen position                         Most browsers      Firefox
+				var dual_screen_left = window.screenLeft != undefined ? window.screenLeft : screen.left
+				var dual_screen_top = window.screenTop != undefined ? window.screenTop : screen.top
+				var width = window.innerWidth || document.documentElement.clientWidth || screen.width
+				var height = window.innerHeight || document.documentElement.clientHeight || screen.height
+				var left = width / 2 - w / 2 + dual_screen_left
+				var top = height / 2 - h / 2 + dual_screen_top
+				var new_window = window.open(
+					url,
+					title,
+					`'scrollbars=yes, width=${w}, height=${h}, top=${top}, left=${left}`
+				)
+
+				// Puts focus on the newWindow
+				if (window.focus) new_window.focus()
+			}
+		</script>
+		<% } %>
+		<footer>
+			<p>
+				Made by <a href="https://github.com/OhBeomho">OhBeomho</a><br />
+				Source on <a href="https://github.com/OhBeomho/Chatob">Github</a>
+			</p>
+		</footer>
+	</body>
+</html>

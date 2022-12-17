@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
+
+* {
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+:root {
+	--primary-color: rgb(40, 40, 40);
+	--secondary-color: rgb(80, 80, 80);
+}
+
+html,
+body {
+	margin: 0;
+}
+
+body {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	background-color: var(--primary-color);
+	color: white;
+}
+
+nav a {
+	color: white;
+}
+
+nav .brand {
+	font-size: 30px;
+}
+
+nav div {
+	display: flex;
+	gap: 10px;
+}
+
+main {
+	flex: 1;
+}
+
+footer {
+	text-align: center;
+	background-color: var(--secondary-color);
+	color: gray;
+}
+
+footer a {
+	color: darkgray;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+input,
+button,
+textarea {
+	outline: none;
+}
+
+textarea {
+	resize: none;
+}
+
+hr {
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+}
+
+input,
+textarea {
+	border: 1px solid var(--primary-color);
+	transition: box-shadow 0.2s;
+}
+
+input:hover,
+textarea:hover,
+button:hover {
+	box-shadow: 0 0 0 2px rgba(40, 40, 40, 0.5);
+}
+
+input:focus,
+textarea:focus,
+button:active {
+	box-shadow: 0 0 0 2px rgba(40, 40, 40, 0.8);
+}
+
+button {
+	border: 0;
+	margin: 3px 0;
+	color: white;
+	background-color: var(--primary-color);
+	transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+	background-color: var(--secondary-color);
+}
