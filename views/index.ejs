@@ -40,11 +40,13 @@
 					<span>
 						<img src="/images/user.png" alt="" />
 						<span><%= friend.name %></span>
-						<button type="button" onclick="remove_friend('<%= friend.name %>')">친구 삭제</button>
 					</span>
-					<span
-						class="status-circle <%= friend.chatting ? 'chatting' : (friend.online ? 'online' : 'offline') %>"
-					></span>
+					<span>
+						<button type="button" onclick="remove_friend('<%= friend.name %>')">친구 삭제</button>
+						<span
+							class="status-circle <%= friend.chatting ? 'chatting' : (friend.online ? 'online' : 'offline') %>"
+						></span>
+					</span>
 				</li>
 				<% }} else { %> 아직 친구를 추가하지 않으셨습니다.<br />
 				<button type="button" onclick="document.querySelector('dialog#request').showModal()">
@@ -77,10 +79,7 @@
 					<li>
 						<span><%= request %>님의 친구 요청</span>
 						<span>
-							<button
-								onclick="accept_request('<%= request %>')"
-								style="background-color: green"
-							>
+							<button onclick="accept_request('<%= request %>')" style="background-color: green">
 								수락
 							</button>
 							<button
