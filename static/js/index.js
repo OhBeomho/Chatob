@@ -21,6 +21,8 @@ socket.on('create_room', (data) => {
 })
 
 function create_room(room_name, max_users) {
+	if (!room_name || max_users < 2 || max_users > 100) return
+
 	socket.emit('create_room', { room_name, max_users })
 }
 

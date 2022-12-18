@@ -19,7 +19,11 @@ socket.on('room', (data1, data2) => {
 				send(textarea.value)
 			}
 		})
+
+		return
 	}
+
+	window.close()
 })
 
 socket.on('chat', (data) => {

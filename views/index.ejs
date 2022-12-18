@@ -36,30 +36,32 @@
 			</div>
 		</nav>
 		<main>
-			<ul id="friend_list">
-				<li class="title"><span>친구 목록</span></li>
-				<% if (friends.length > 0) { %> <% for (let friend of friends) { %>
-				<li>
-					<span>
-						<img src="/images/user.png" alt="" />
-						<span><%= friend.name %></span>
-					</span>
-					<span>
-						<button type="button" onclick="remove_friend('<%= friend.name %>')">친구 삭제</button>
-						<span
-							class="status-circle <%= friend.chatting ? 'chatting' : (friend.online ? 'online' : 'offline') %>"
-						></span>
-					</span>
-				</li>
-				<% }} else { %> 아직 친구를 추가하지 않으셨습니다.<br />
-				<button type="button" onclick="document.querySelector('dialog#request').showModal()">
-					친구 추가하기
-				</button>
-				<% } %>
-			</ul>
+			<div style="flex: 1">
+				<span class="title">친구 목록</span>
+				<ul id="friend_list">
+					<% if (friends.length > 0) { %> <% for (let friend of friends) { %>
+					<li>
+						<span>
+							<img src="/images/user.png" alt="" />
+							<span><%= friend.name %></span>
+						</span>
+						<span>
+							<button type="button" onclick="remove_friend('<%= friend.name %>')">친구 삭제</button>
+							<span
+								class="status-circle <%= friend.chatting ? 'chatting' : (friend.online ? 'online' : 'offline') %>"
+							></span>
+						</span>
+					</li>
+					<% }} else { %> 아직 친구를 추가하지 않으셨습니다.<br />
+					<button type="button" onclick="document.querySelector('dialog#request').showModal()">
+						친구 추가하기
+					</button>
+					<% } %>
+				</ul>
+			</div>
 			<div style="flex: 2; display: flex; flex-direction: column">
+				<span class="title">온라인</span>
 				<ul id="online_friend_list">
-					<li class="title"><span>온라인</span></li>
 					<% const online_friends = friends.filter((friend) => friend.online || friend.chatting) %> <% if
 					(online_friends.length > 0) { %> <% for (let friend of online_friends) { %>
 					<li>
@@ -76,8 +78,8 @@
 					</li>
 					<% }} else { %> 온라인인 친구가 없습니다. <% } %>
 				</ul>
+				<span class="title">요청 목록</span>
 				<ul id="request_list">
-					<li class="title"><span>요청 목록</span></li>
 					<% if (requests.length > 0) { %> <% for (let request of requests) { %>
 					<li>
 						<span><%= request %>님의 친구 요청</span>
@@ -101,8 +103,8 @@
 					<h2>방 만들기</h2>
 					<p>
 						방 이름: <input type="text" id="create_room_name" /><br />
-						최대 인원:
-						<input type="number" id="max_users" min="2" max="100" /><br />
+						최대 인원 (2 ~ 100):
+						<input type="number" id="max_users" min="2" max="100" value="2" /><br />
 						<button
 							type="button"
 							onclick="create_room(document.querySelector('input#create_room_name').value, document.querySelector('input#max_users').valueAsNumber)"

@@ -24,7 +24,8 @@ nav {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px;
+	height: 60px;
+	padding: 0 10px;
 	background-color: var(--primary-color);
 	color: white;
 }
@@ -43,13 +44,23 @@ nav div {
 }
 
 main {
+	padding: 20px;
+	max-height: calc(100% - 160px);
 	flex: 1;
 }
 
 footer {
+	height: 60px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	text-align: center;
 	background-color: var(--secondary-color);
 	color: gray;
+}
+
+footer p {
+	margin: 0;
 }
 
 footer a {

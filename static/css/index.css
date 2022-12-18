@@ -1,6 +1,6 @@
 main {
 	display: flex;
-	padding: 20px;
+	gap: 20px;
 }
 
 .status-circle {
@@ -45,6 +45,7 @@ ul {
 	list-style: none;
 	padding: 0;
 	margin: 20px;
+	overflow: auto;
 }
 
 li {
@@ -60,15 +61,16 @@ li > * {
 	gap: 5px;
 }
 
-li.title {
+.title {
 	display: flex;
+	align-items: center;
 	gap: 20px;
 	font-size: 20px;
 	font-weight: bold;
 }
 
-li.title::before,
-li.title::after {
+.title::before,
+.title::after {
 	content: '';
 	flex: 1;
 	height: 2px;
