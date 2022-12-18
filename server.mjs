@@ -1,4 +1,4 @@
-import express, { application } from 'express'
+import express from 'express'
 import ejs from 'ejs'
 import http from 'http'
 import session from 'express-session'
