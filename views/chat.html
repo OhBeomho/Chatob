@@ -106,12 +106,12 @@
 			const message_list = document.querySelector('ul')
 			let my_username
 
-			socket.on('room', (data) => {
-				if (data === 'NE') alert('존재하지 않는 방입니다.')
-				else if (data === 'F') alert('방 인원이 가득 찼습니다.')
+			socket.on('room', (data1, data2) => {
+				if (data1 === 'NE') alert('존재하지 않는 방입니다.')
+				else if (data1 === 'F') alert('방 인원이 가득 찼습니다.')
 				else {
-					my_username = data[0]
-					document.querySelector('#max_users').innerHTML = data[1]
+					my_username = data1
+					document.querySelector('#max_users').innerHTML = data2
 					socket.removeAllListeners('room')
 					textarea.addEventListener('keydown', (e) => {
 						if (!e.repeat && !e.shiftKey && e.key === 'Enter') {
