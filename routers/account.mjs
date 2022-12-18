@@ -25,6 +25,9 @@ router
 	.post((req, res) => {
 		const { id, password } = req.body
 
+		if (id.length < 3 || id.length > 20) res.render('error', { err: 'ID는 3자 이상 20자 이하여야 합니다.' })
+		else if (password.length < 4) res.render('error', { err: '비밀번호는 4자 이상이여야 합니다.' })
+
 		Account.sign_up(id, password)
 			.then(() => res.redirect('/account/login'))
 			.catch((err) => res.render('error', { err }))

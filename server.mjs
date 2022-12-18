@@ -118,9 +118,10 @@ io.on('connection', (socket) => {
 					message: `${request_id}님이 이미 채팅 중입니다.`
 				})
 			} else {
+				// 수락
 				const room_name = `${request_id}_${username}`
 				rooms.push({ room_name, users: 0, max_users: 2 })
-				io.to(request_id).to(username).emit('request', { type: 'ACCEPT', room_name }) // 수락
+				io.to(request_id).to(username).emit('request', { type: 'ACCEPT', room_name })
 			}
 		}
 	})
@@ -135,15 +136,21 @@ chat_io.on('connection', (socket) => {
 	socket.on('room', (room_name) => {
 		const room = rooms.find((room) => room.room_name === room_name)
 
-		if (!room) socket.emit('room', 'NOT_EXISTS')
-		else if (room.users >= room.max_users) socket.emit('room', 'FULL')
+		if (!room) socket.emit('room', 'NE')
+		else if (room.users >= room.max_users) socket.emit('room', 'F')
 		else {
 			room.users++
 			current_room = room
 
 			socket.join(room_name)
-			socket.emit('room', 'JOINED')
+			socket.emit('room', username, room.max_users)
 			socket.removeAllListeners('room')
+
+			chat_io.to(room_name).emit('chat', {
+				username: 'S',
+				message: username + '님이 입장하였습니다.',
+				users: current_room.users
+			})
 		}
 	})
 
@@ -151,7 +158,7 @@ chat_io.on('connection', (socket) => {
 	socket.on('chat', (message) => {
 		if (!current_room) return
 
-		io.to(current_room.room_name).emit('chat', {
+		chat_io.to(current_room.room_name).emit('chat', {
 			username,
 			message
 		})
@@ -162,6 +169,12 @@ chat_io.on('connection', (socket) => {
 		if (current_room) {
 			current_room.users--
 			if (current_room.users <= 0) rooms.splice(rooms.indexOf(current_room), 1)
+
+			chat_io.to(current_room.room_name).emit('chat', {
+				username: 'S',
+				message: username + '님이 퇴장하였습니다.',
+				users: current_room.users
+			})
 		}
 	})
 })
