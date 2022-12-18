@@ -1,0 +1,76 @@
+nav {
+	height: 60px;
+	padding: 0 10px;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	height: calc(100% - 60px);
+	gap: 10px;
+}
+
+ul {
+	flex: 1;
+	overflow: auto;
+	list-style: none;
+	padding: 0;
+	font-size: 13px;
+}
+
+li {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	padding: 5px;
+	margin: 5px 0;
+}
+
+li.me {
+	flex-direction: row-reverse;
+}
+
+li.s {
+	justify-content: center;
+	align-items: center;
+}
+
+li img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+
+.chat-bubble {
+	padding: 5px;
+	margin: 10px 0;
+	border-radius: 5px;
+	white-space: pre-wrap;
+	word-break: break-all;
+	max-width: 40%;
+}
+
+.other .chat-bubble {
+	border-bottom-left-radius: 0;
+	background-color: lightgray;
+}
+
+.me .chat-bubble {
+	border-bottom-right-radius: 0;
+	background-color: var(--primary-color);
+	color: white;
+}
+
+main > div {
+	display: flex;
+	gap: 5px;
+	padding: 10px;
+}
+
+main > div textarea {
+	flex: 1;
+}
+
+main > div button {
+	padding: 0 15px;
+}
