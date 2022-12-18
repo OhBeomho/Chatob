@@ -98,9 +98,9 @@
 				<div>
 					<h2>방 만들기</h2>
 					<p>
-						방 이름: <input type="text" id="create_room_name" placeholder="방 이름 입력" /><br />
+						방 이름: <input type="text" id="create_room_name" /><br />
 						최대 인원:
-						<input type="number" id="max_users" min="2" max="100" placeholder="최대 인원 수 입력" /><br />
+						<input type="number" id="max_users" min="2" max="100" /><br />
 						<button
 							type="button"
 							onclick="create_room(document.querySelector('input#create_room_name').value, document.querySelector('input#max_users').valueAsNumber)"
@@ -128,7 +128,7 @@
 			<h1>친구 추가하기</h1>
 			<p>ID를 이용하여 친구를 추가할 수 있습니다.</p>
 			<p>
-				<input type="text" id="friend_request_id" minlength="3" maxlength="20" placeholder="ID 입력" /><br />
+				<input type="text" id="friend_request_id" minlength="3" maxlength="20" /><br />
 				<button type="button" onclick="friend_request(document.querySelector('input#friend_request_id').value)">
 					친구 요청 보내기
 				</button>
