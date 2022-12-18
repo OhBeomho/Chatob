@@ -99,7 +99,7 @@ function open_chat(url) {
 		const top = screen_height / 2 - height / 2 + dual_screen_top
 
 		window
-			.open(url, 'Chatob', `scrollbars=yes, resizable=0, width=${width}, height=${height}, top=${top}, left=${left}`)
+			.open(url, 'Chatob', `scrollbars=yes,resizable=0,width=${width},height=${height},top=${top},left=${left}`)
 			.focus()
 	}
 }

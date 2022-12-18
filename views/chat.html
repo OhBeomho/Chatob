@@ -25,5 +25,10 @@
 
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/js/chat.js"></script>
+		<script>
+			window.addEventListener('keydown', (e) => {
+				if (e.key === 'F5') e.preventDefault()
+			})
+		</script>
 	</body>
 </html>
